@@ -25,15 +25,6 @@ const userSchema = new mongoose.Schema(
         return false;
       },
     },
-    hospitalName: {
-      type: String,
-      required: function () {
-        if (this.role === "hospital") {
-          return true;
-        }
-        return false;
-      },
-    },
     email: {
       type: String,
       required: [true, "email is required"],
