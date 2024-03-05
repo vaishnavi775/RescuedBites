@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 
 const foodSchema = new mongoose.Schema({
-    foodName:{
+    foodName: {
         type: String,
         required: true,
     },
     foodTag: {
-        type:String,
+        type: String,
         required: true,
     },
     quantity: {
@@ -17,7 +17,14 @@ const foodSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    user: {
-        type: mongoose.Schema.Types.ObjectId, ref:'User'
+    donor: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant'
+    },
+    selector: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'NGO'
     }
 })
+
+const Food = mongoose.model('Food', foodSchema);
+
+module.exports = Food
