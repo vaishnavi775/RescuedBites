@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: function () {
         if (this.role === "donor" || this.role === "admin") {
-          return true;
+          return false;
         }
         return false;
       },
@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: [true, "contact number is required"],
+      required: [false, "contact number is required"],
     },
   },
   { timestamps: true }
