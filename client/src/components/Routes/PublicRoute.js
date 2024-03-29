@@ -1,13 +1,12 @@
-import React from 'react'
-import { Navigate } from 'react-router-dom'
+import React from "react";
+import { Navigate } from "react-router-dom";
 
 const PublicRoute = ({ children }) => {
     if (localStorage.getItem("token")) {
         return <Navigate to="/" />;
-    }
-    else {
+    } else {
         return children;
     }
 };
 
-export default PublicRoute
+export default PublicRoute;

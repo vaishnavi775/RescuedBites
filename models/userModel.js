@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: [true, "contact number is required"],
+      required: [false, "contact number is required"],
     },
   },
   { timestamps: true }
