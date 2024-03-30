@@ -12,7 +12,7 @@ const registerController = async (req, res) => {
         message: "User Already exists",
       });
     }
-    //hash password
+    //hash passwordr
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
     req.body.password = hashedPassword;
