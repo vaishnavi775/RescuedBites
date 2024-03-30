@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Form from "../../components/shared/Form/Form";
 import { useSelector } from "react-redux";
-import Spinner from "./../../components/shared/spinner";
+import Spinner from "../../components/shared/Spinner";
 import { toast } from "react-toastify";
 
 const Login = () => {
@@ -13,7 +13,7 @@ const Login = () => {
     }, [error]);
     return (
         <>
-            {/* {error && <span>{toast.error(error)}</span>} */}
+            {error && <span>{toast.error(error)}</span>}
             {loading ? (
                 <Spinner />
             ) : (

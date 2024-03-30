@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Form from "../../components/shared/Form/Form";
-import Spinner from "./../../components/shared/spinner";
+import Spinner from "../../components/shared/Spinner";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
@@ -14,6 +14,7 @@ const Register = () => {
     }, [error]);
     return (
         <>
+            {error && <span>{toast.error(error)}</span>}
             {loading ? (
                 <Spinner />
             ) : (
