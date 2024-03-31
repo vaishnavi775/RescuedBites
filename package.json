@@ -1,29 +1,33 @@
 {
-  "name": "mern-rescued-bites",
+  "name": "food-donation-management-system",
   "version": "1.0.0",
-  "description": "rescued bites",
-  "main": "server.js",
+  "description": "A Food donation management system in which donors can donate the food and this food can be fed to the poor people",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon server.js",
-    "client": "npm start --prefix ./client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "start": "node app.js",
+    "dev": "nodemon app.js -e html,css,js,ejs"
   },
-  "author": "techinfoyt",
+  "keywords": [
+    "Food",
+    "Donation",
+    "management"
+  ],
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "browserify-zlib": "^0.2.0",
-    "colors": "^1.4.0",
-    "concurrently": "^8.2.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.1.0",
-    "morgan": "^1.10.0",
-    "nodemon": "^2.0.22",
-    "react-router-dom": "^6.22.2",
-    "redux": "^5.0.1"
+    "connect-flash": "^0.1.1",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.2",
+    "method-override": "^3.0.0",
+    "mongoose": "^6.1.2",
+    "passport": "^0.5.2",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
