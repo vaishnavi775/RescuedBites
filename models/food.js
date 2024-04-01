@@ -30,6 +30,11 @@ const foodSchema = new mongoose.Schema({
 		enum: ["available", "selected"],
 		required: true
 	},
+    donorToAdminMsg: String,
+	adminToAgentMsg: String,
+	collectionTime: {
+		type: Date,
+	},
 })
 
 const Food = mongoose.model('Food', foodSchema);
