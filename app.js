@@ -8,7 +8,7 @@ const methodOverride = require("method-override");
 const homeRoutes = require("./routes/home.js");
 const authRoutes = require("./routes/auth.js");
 // const adminRoutes = require("./routes/admin.js");
-// const donorRoutes = require("./routes/donor.js");
+const donorRoutes = require("./routes/donor.js");
 // const agentRoutes = require("./routes/agent.js");
 require("dotenv").config();
 require("./config/dbConnection.js")();
@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 // Routes
 app.use(homeRoutes);
 app.use(authRoutes);
-// app.use(donorRoutes);
+app.use(donorRoutes);
 // app.use(adminRoutes);
 // app.use(agentRoutes);
 app.use((req,res) => {

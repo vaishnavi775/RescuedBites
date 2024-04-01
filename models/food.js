@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Restaurant = require("./restaurant");
+const Donor = require("./donor");
 const NGO = require("./ngo");
 
 const foodSchema = new mongoose.Schema({
@@ -15,19 +15,21 @@ const foodSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    expriyDate: {
+    expiryDate: {
         type: Date,
         required: true,
     },
     donor: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant'
+        type: mongoose.Schema.Types.ObjectId, ref: 'Donor',
+        required:true,
+
     },
     ngo: {
         type: mongoose.Schema.Types.ObjectId, ref: 'NGO'
     },
     status: {
 		type: String,
-		enum: ["available", "selected"],
+		enum: ["pending", "accepted","collected"],
 		required: true
 	},
     donorToAdminMsg: String,
