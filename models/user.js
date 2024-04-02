@@ -21,8 +21,14 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		enum: ["male", "female"]
 	},
-	address: String,
-	phone: Number,
+	address: {
+		type: String,
+		required: true
+	},
+	phone: {
+		type: Number,
+		required: true
+	},
 	joinedTime: {
 		type: Date,
 		default: Date.now
