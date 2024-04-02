@@ -9,7 +9,6 @@ router.get("/donor/dashboard", middleware.ensureDonorLoggedIn, async (req,res) =
 	const donorId = req.user._id;
 	const numPendingDonations = await Food.countDocuments({ donor: donorId, status: "pending" });
 	const numAcceptedDonations = await Food.countDocuments({ donor: donorId, status: "accepted" });
-	//const numAssignedDonations = await Donation.countDocuments({ donor: donorId, status: "assigned" });
 	const numCollectedDonations = await Food.countDocuments({ donor: donorId, status: "collected" });
 	res.render("donor/dashboard", {
 		title: "Dashboard",
