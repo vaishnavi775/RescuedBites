@@ -39,10 +39,10 @@ router.post("/donor/donate", middleware.ensureDonorLoggedIn, async (req,res) => 
 	}
 });
 
-/*router.get("/donor/donations/pending", middleware.ensureDonorLoggedIn, async (req,res) => {
+router.get("/donor/donations/pending", middleware.ensureDonorLoggedIn, async (req,res) => {
 	try
 	{
-		const pendingDonations = await Donation.find({ donor: req.user._id, status: ["pending", "rejected", "accepted", "assigned"] }).populate("agent");
+		const pendingDonations = await Food.find({ donor: req.user._id, status:["pending", "accepted"] }).populate("ngo")
 		res.render("donor/pendingDonations", { title: "Pending Donations", pendingDonations });
 	}
 	catch(err)
@@ -56,7 +56,12 @@ router.post("/donor/donate", middleware.ensureDonorLoggedIn, async (req,res) => 
 router.get("/donor/donations/previous", middleware.ensureDonorLoggedIn, async (req,res) => {
 	try
 	{
-		const previousDonations = await Donation.find({ donor: req.user._id, status: "collected" }).populate("agent");
+		const previousDonations = await Food.find({ donor: req.user._id, status: "collected" }).populate({
+            path: 'ngo',
+            model: User,
+            select: '',
+            
+        })
 		res.render("donor/previousDonations", { title: "Previous Donations", previousDonations });
 	}
 	catch(err)
@@ -80,7 +85,7 @@ router.get("/donor/donation/deleteRejected/:donationId", async (req,res) => {
 		req.flash("error", "Some error occurred on the server.")
 		res.redirect("back");
 	}
-});*/
+});
 
 router.get("/donor/profile", middleware.ensureDonorLoggedIn, (req,res) => {
 	res.render("donor/profile", { title: "My Profile" });
