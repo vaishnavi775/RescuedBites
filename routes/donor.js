@@ -8,8 +8,9 @@ const Food = require("../models/food.js");
 router.get("/donor/dashboard", middleware.ensureDonorLoggedIn, async (req,res) => {
 	const donorId = req.user._id;
 	const numPendingDonations = await Food.countDocuments({ donor: donorId, status: "pending" });
-	const numAcceptedDonations = await Food.countDocuments({ donor: donorId, status: "accepted" });
-	const numCollectedDonations = await Food.countDocuments({ donor: donorId, status: "collected" });
+	const numAcceptedDonations = await Food.countDocuments({ donor: donorId, status: "collected" });
+	// const numCollectedDonations = await Food.countDocuments({ donor: donorId, status: "collected" });
+	const numCollectedDonations = numPendingDonations + numAcceptedDonations;
 	res.render("donor/dashboard", {
 		title: "Dashboard",
 		numPendingDonations, numAcceptedDonations,numCollectedDonations

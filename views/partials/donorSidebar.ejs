@@ -1,6 +1,9 @@
 <div id="sidebar">
 	<ul id="sidebar-nav">
-		<li>Welcome <%= currentUser.firstName %></li>
+		<br>
+		<li style="margin-left: 20px;">Welcome <%= currentUser.firstName %></li>
+		<li style="margin-left: 4rem; font-style: italic;"> (<%= currentUser.role %>)</li>
+		<br>
 		<li><a href="/donor/dashboard">Dashboard</a></li>
 		<li><a href="/donor/donate">Donate</a></li>
 		<li><a href="/donor/donations/pending">My Pending Donations</a></li>
