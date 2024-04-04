@@ -9,6 +9,9 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	organisationName: {
+		type: String,
+	},
 	email: {
 		type: String,
 		required: true
@@ -38,6 +41,7 @@ const userSchema = new mongoose.Schema({
 		enum: ["ngo", "donor","admin"],
 		required: true
 	}
+	
 });
 
 const User = mongoose.model("users", userSchema);
