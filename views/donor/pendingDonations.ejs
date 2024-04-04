@@ -12,8 +12,8 @@
 			<% for(let i=0; i<pendingDonations.length; i++) { %>
 				<div class="bg-white mb-4 p-4 shadow-sm">
 					<div class="mb-2">
-						<span>Food type:</span>
-						<span><%= pendingDonations[i].foodType %></span>
+						<span>Food Name:</span>
+						<span><%= pendingDonations[i].foodName %></span>
 					</div>
 					
 					<div class="mb-2">
@@ -23,12 +23,12 @@
 					
 					<div class="mb-2">
 						<span>Address given:</span>
-						<span><%= pendingDonations[i].address %></span>
+						<span><%= pendingDonations[i].donor.address %></span>
 					</div>
 					
 					<div class="mb-2">
 						<span>Phone given:</span>
-						<span><%= pendingDonations[i].phone %></span>
+						<span><%= pendingDonations[i].donor.phone %></span>
 					</div>
 					
 					<div class="mb-2">

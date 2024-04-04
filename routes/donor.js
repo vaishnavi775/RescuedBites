@@ -43,7 +43,12 @@ router.post("/donor/donate", middleware.ensureDonorLoggedIn, async (req,res) => 
 router.get("/donor/donations/pending", middleware.ensureDonorLoggedIn, async (req,res) => {
 	try
 	{
-		const pendingDonations = await Food.find({ donor: req.user._id, status:["pending", "accepted"] }).populate("ngo")
+		const pendingDonations = await Food.find({ donor: req.user._id, status:"pending" }).populate({
+            path: 'donor',
+            model: User,
+            select: '',
+            
+        });  
 		res.render("donor/pendingDonations", { title: "Pending Donations", pendingDonations });
 	}
 	catch(err)
@@ -57,12 +62,12 @@ router.get("/donor/donations/pending", middleware.ensureDonorLoggedIn, async (re
 router.get("/donor/donations/previous", middleware.ensureDonorLoggedIn, async (req,res) => {
 	try
 	{
-		const previousDonations = await Food.find({ donor: req.user._id, status: "collected" }).populate({
+		const previousDonations = await Food.find({ donor: req.user._id, status:"collected"}).populate({
             path: 'ngo',
             model: User,
             select: '',
             
-        })
+        });
 		res.render("donor/previousDonations", { title: "Previous Donations", previousDonations });
 	}
 	catch(err)
