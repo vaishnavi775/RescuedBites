@@ -126,7 +126,21 @@ router.get("/ngo/collection/view/:collectionId", middleware.ensureNgoLoggedIn, a
 router.get("/ngo/collection/collect/:collectionId", middleware.ensureNgoLoggedIn, async (req, res) => {
     try {
         const collectionId = req.params.collectionId;
-        await Food.findByIdAndUpdate(collectionId, { status: "collected", collectionTime: Date.now() });
+        // Find the food item by collectionId
+        const food = await Food.findById(collectionId);
+        if (!food) {
+            req.flash("error", "Food item not found");
+            return res.redirect("back");
+        }
+        
+        // Update the food item status and ngo fields
+        food.status = "collected";
+        food.collectionTime = Date.now();
+        food.ngo = req.user._id; // Assuming req.user contains the authenticated NGO's user object
+        
+        // Save the updated food item
+        await food.save();
+        console.log(food)
         req.flash("success", "Donation collected successfully");
         res.redirect(`/ngo/collection/view/${collectionId}`);
     } catch (err) {
@@ -135,6 +149,5 @@ router.get("/ngo/collection/collect/:collectionId", middleware.ensureNgoLoggedIn
         res.redirect("back");
     }
 });
-
 
 module.exports = router;
