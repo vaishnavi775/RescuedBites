@@ -28,6 +28,13 @@
 							</div>
 
 							<div class="mb-3">
+								<label for="organisation-name" class="form-label">Organisation name</label>
+								<input type="text" name="organisationName" class="form-control" id="organisation-name"
+									placeholder="Enter organisation name.."
+									value="<%= typeof OrganisationName != 'undefined' ? OrganisationName : '' %>" required>
+							</div>
+
+							<div class="mb-3">
 								<label for="email" class="form-label">Email address</label>
 								<input type="email" name="email" class="form-control" id="email"
 									placeholder="Enter email.." value="<%= typeof email != 'undefined' ? email : '' %>"
