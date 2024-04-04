@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user.js");
 const passport = require("passport");
 const middleware = require("../middleware/index.js")
+const Donor = require("../models/donor.js");
+const NGO = require("../models/ngo.js");
 
 
 
