@@ -3,13 +3,26 @@ const router = express.Router();
 const middleware = require("../middleware/index.js");
 const User = require("../models/user.js");
 const Food = require("../models/food.js");
+const Notification = require('../models/notification');
+const NotificationService = require('../config/notificationService');
 
+
+router.get('/donor/notification', async (req, res) => {
+    try {
+        const notifications = await Notification.find({ recipient: req.user._id }).sort({ timestamp: -1 });
+        await Notification.updateMany({ recipient: req.user._id }, { $set: { status: 'read' } });
+		res.render("donor/notification", { title: "Notifications", notifications: notifications});
+
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 router.get("/donor/dashboard", middleware.ensureDonorLoggedIn, async (req,res) => {
 	const donorId = req.user._id;
 	const numPendingDonations = await Food.countDocuments({ donor: donorId, status: "pending" });
 	const numAcceptedDonations = await Food.countDocuments({ donor: donorId, status: "collected" });
-	// const numCollectedDonations = await Food.countDocuments({ donor: donorId, status: "collected" });
 	const numCollectedDonations = numPendingDonations + numAcceptedDonations;
 	res.render("donor/dashboard", {
 		title: "Dashboard",
@@ -21,24 +34,38 @@ router.get("/donor/donate", middleware.ensureDonorLoggedIn, (req,res) => {
 	res.render("donor/donate", { title: "Donate" });
 });
 
-router.post("/donor/donate", middleware.ensureDonorLoggedIn, async (req,res) => {
-	try
-	{
-		const donation = req.body.donation;
-		donation.status = "pending";
-		donation.donor = req.user._id;
-		const newDonation = new Food(donation);
-		await newDonation.save();
-		req.flash("success", "Donation request sent successfully");
-		res.redirect("/donor/donations/pending");
-	}
-	catch(err)
-	{
-		console.log(err);
-		req.flash("error", "Some error occurred on the server.")
-		res.redirect("back");
-	}
+
+
+router.post("/donor/donate", middleware.ensureDonorLoggedIn, async (req, res) => {
+    try {
+        const donation = req.body.donation;
+        donation.status = "pending";
+        donation.donor = req.user._id;
+        const newDonation = new Food(donation);
+        await newDonation.save();
+
+        const senderId = req.user._id;
+        const senderfName = req.user.firstName;
+        const senderlName = req.user.lastName;
+        const sender = senderfName.concat(" ", senderlName);
+        const foodName = donation.foodName;
+        const message = `${sender} wants to donate  ${foodName}.`;
+
+        const ngos = await User.find({ role: "ngo" });
+        for (const ngo of ngos) {
+            const notification = await NotificationService.sendNotification(senderId, ngo._id, message, "unread", new Date());
+            console.log(notification);
+        }
+
+        req.flash("success", "Donation request sent successfully");
+        res.redirect("/donor/donations/pending");
+    } catch (err) {
+        console.log(err);
+        req.flash("error", "Some error occurred on the server.")
+        res.redirect("back");
+    }
 });
+
 
 router.get("/donor/donations/pending", middleware.ensureDonorLoggedIn, async (req,res) => {
 	try

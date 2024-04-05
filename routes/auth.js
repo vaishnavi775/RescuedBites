@@ -6,8 +6,8 @@ const passport = require("passport");
 const middleware = require("../middleware/index.js")
 const Donor = require("../models/donor.js");
 const NGO = require("../models/ngo.js");
-
-
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 router.get("/auth/signup", middleware.ensureNotLoggedIn, (req,res) => {
 	res.render("auth/signup", { title: "User Signup" });
@@ -82,6 +82,87 @@ router.get("/auth/logout", (req,res) => {
 	req.flash("success", "Logged-out successfully")
 	res.redirect("/");
 });
+
+
+
+// Request password reset (Step 1)
+router.get('/forgot-password', (req, res) => {
+    res.render('forgot-password');
+});
+
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            // Handle case where email is not found
+            return res.render('forgot-password', { error: 'Email not found' });
+        }
+        // Generate token
+        const token = crypto.randomBytes(20).toString('hex');
+        // Set token expiry time (e.g., 1 hour)
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+        await user.save();
+        // Send email with reset link
+        const transporter = nodemailer.createTransport({
+            // Configure your email service here
+        });
+        const mailOptions = {
+            // Configure email options (sender, receiver, subject, etc.)
+            // Include the reset password link in the email body
+        };
+        await transporter.sendMail(mailOptions);
+        res.render('forgot-password', { success: 'Check your email for instructions' });
+    } catch (error) {
+        console.error('Error:', error);
+        res.render('forgot-password', { error: 'Something went wrong' });
+    }
+});
+
+// Reset password (Steps 4 and 5)
+router.get('/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    try {
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() } // Check token expiry
+        });
+        if (!user) {
+            // Handle invalid or expired token
+            return res.redirect('/forgot-password');
+        }
+        res.render('reset-password', { token });
+    } catch (error) {
+        console.error('Error:', error);
+        res.redirect('/forgot-password');
+    }
+});
+
+router.post('/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+    try {
+        const user = await User.findOneAndUpdate({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
+        }, {
+            password: newPassword,
+            resetPasswordToken: null,
+            resetPasswordExpires: null
+        });
+        if (!user) {
+            // Handle invalid or expired token
+            return res.redirect('/forgot-password');
+        }
+        res.render('login', { message: 'Password reset successful. You can now login.' });
+    } catch (error) {
+        console.error('Error:', error);
+        res.redirect('/forgot-password');
+    }
+});
+
+module.exports = router;
 
 
 module.exports = router;

@@ -2,12 +2,12 @@
 	<%- include('../partials/donorSidebar') %>
 	
 	<div id="main-wrapper">
-		<div class="bg-white shadow-sm p-3">
+		<div class=" shadow-sm p-3">
 			<span class="me-3" id="sidebar-toggler-btn"><i class="fas fa-bars"></i></span>
 			<h5 class="m-0 color-theme d-inline-block">Donate</h5>
 		</div>
 		
-		<form action="/donor/donate" method="POST" class="border m-4 my-3 p-4 bg-white rounded-2 shadow">
+		<form action="/donor/donate" method="POST" class="border m-4 my-3 p-4 rounded-2 shadow prof">
 			<div class="mb-4">
 				<label for="name" class="form-label">Food Name</label>
 				<input type="text" name="donation[foodName]" class="form-control" id="name" placeholder="Enter foodName" required autofocus>
@@ -24,7 +24,7 @@
 				</div>
 				
 				<div class="mb-4 col-sm-6">
-					<label for="time" class="form-label">Expiry date</label>
+					<label for="time" class="form-label">Date of Cooking</label>
 					<input type="datetime-local" name="donation[expiryDate]" class="form-date-input" id="time" required>
 				</div>
 			</div>
