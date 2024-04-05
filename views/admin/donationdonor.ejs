@@ -1,0 +1,59 @@
+<main>
+	<%- include('../partials/adminSidebar') %>
+	
+	<div id="main-wrapper">
+		
+		<div class="bg-white shadow-sm p-3">
+			<span class="me-3" id="sidebar-toggler-btn"><i class="fas fa-bars"></i></span>
+			<h5 class="m-0 color-theme d-inline-block">Donations</h5>
+		</div>
+		<div>
+		<% for(let i=0; i<donation.length; i++) { %>
+			<div class="mb-2">
+				<span>Food Name:</span>
+				<span><%= donation[i].foodName %></span>
+			</div>
+			<div class="mb-2">
+				<span>Food Tag:</span>
+				<span><%= donation[i].foodTag %></span>
+			</div>
+			
+			<div class="mb-2">
+				<span>Quantity:</span>
+				<span><%= donation[i].quantity %></span>
+			</div>
+			
+			
+			<% if(donation[i].donorToAdminMsg != "") { %>
+				<div class="mb-2">
+					<span>Message from Donor:</span>
+					<div class="ms-3"><%= donation[i].donorToAdminMsg %></div>
+				</div>
+			<% } %>
+				
+			<div class="mb-2">
+				<span>Status:</span>
+				<span class="fw-bold text-<%= donation.status %>"><%= donation[i].status %></span>
+			</div>
+			
+			<% if(donation[i].status == "collected") { %>
+				<div class="mb-2">
+					<span>Collection time:</span>
+					<span><%= donation[i].collectionTime.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short"}) %></span>
+				</div>
+			<% } %>
+
+			<% if(donation[i].status == "pending") { %>
+				<div class="mb-2">
+					<form action="/admin/donor/view/pending/<%=donorId %>/<%=donation[i]._id %>?_method=DELETE" method="POST">
+						<td><button class="btn">Remove Donation</button></td>
+					</form>
+				</div>
+			<% } %>
+			<hr colour="blue">
+		<% } %>	
+		
+		<div><a href="/admin/donor/<%=donorId %>" class="btn">Back</a></div>
+		
+	</div>
+</main>

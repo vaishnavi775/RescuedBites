@@ -16,7 +16,7 @@
 						<th scope="col">Food type</th>
 						<th scope="col">Quantity</th>
 						<th scope="col">Status</th>
-						<th scope="col">Cooking Time</th>
+						<th scope="col">Organisation Name</th>
 						<th scope="col">Agent assigned</th>
 						<th scope="col">Collection Time</th>
 					</tr>
@@ -28,7 +28,8 @@
 							<td> <%= previousDonations[i].foodName %> </td>
 							<td> <%= previousDonations[i].quantity %> </td>
 							<td class="fw-bold text-<%= previousDonations[i].status %>"> <%= previousDonations[i].status %> </td>
-							<td> <%= previousDonations[i].expiryDate.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short"}) %> </td>
+							<td> <%=previousDonations[i].organisationName%> </td>
+							<%=console.log(previousDonations[i].organisationName)%>
 							<td> <%= previousDonations[i].ngo.firstName + " " + previousDonations[i].ngo.lastName %> </td>
 							<td> <%= previousDonations[i].collectionTime.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short"}) %> </td>
 						</tr>
