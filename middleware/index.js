@@ -26,10 +26,10 @@ const middleware = {
 			req.flash("warning", "Please log in first to continue");
 			return res.redirect("/auth/login");
 		}
-		if(req.user.role != "donor") {
-			req.flash("warning", "This route is allowed for donor only!!");
-			return res.redirect("back");
-		}
+		// if(req.user.role != "donor" || req.user.role != "ngo") {
+		// 	req.flash("warning", "This route is allowed for donor only!!");
+		// 	return res.redirect("back");
+		// }
 		next();
 	},
 	

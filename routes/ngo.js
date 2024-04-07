@@ -1,3 +1,4 @@
+
     const express = require("express");
     const router = express.Router();
     const middleware = require("../middleware/index.js");
@@ -104,6 +105,7 @@
             req.flash("error", "Some error occurred on the server.")
             res.redirect("back");
         }
+
     });
     router.put("/ngo/profile", middleware.ensureNgoLoggedIn, async (req,res) => {
         try
@@ -112,6 +114,7 @@
             const updateObj = req.body.ngo;    // updateObj: {firstName, lastName, address, phone}
             await User.findByIdAndUpdate(id, updateObj);
             
+
             req.flash("success", "Profile updated successfully");
             res.redirect("/ngo/profile");
         }
@@ -152,6 +155,7 @@
                 req.flash("error", "Food item not found");
                 return res.redirect("back");
             }
+
             
             food.status = "collected";
             food.collectionTime = Date.now();
@@ -184,6 +188,64 @@
             req.flash("error", "Some error occurred on the server.");
             res.redirect("back");
         }
+
     });
     
-    module.exports = router;
+
+    // router.get("/ngo/donations/feedback/:donationId", middleware.ensureNgoLoggedIn, async (req, res) => {
+    //     try {
+    //         const donationId = req.params.donationId;
+    //         const donation = await Donation.findById(donationId);
+    //         res.render("ngo/feedback", { title: "Add Feedback", donation });
+    //     } catch (err) {
+    //         console.log(err);
+    //         req.flash("error", "Some error occurred on the server.")
+    //         res.redirect("back");
+    //     }
+    // });
+    
+    // router.post("/ngo/donations/feedback/:donationId", middleware.ensureNgoLoggedIn, async (req, res) => {
+    //     try {
+    //         const donationId = req.params.donationId;
+    //         const feedback = req.body.feedback;
+    //         await Donation.findByIdAndUpdate(donationId, { feedback: feedback });
+    //         req.flash("success", "Feedback added successfully");
+    //         res.redirect("/ngo/donations/previous");
+    //     } catch (err) {
+    //         console.log(err);
+    //         req.flash("error", "Some error occurred on the server.")
+    //         res.redirect("back");
+    //     }
+    // });
+
+
+router.get("/ngo/feedback/:collectionId", middleware.ensureNgoLoggedIn, async (req, res) => {
+    try {
+        const collectionId = req.params.collectionId;
+        const collection = await Food.findById(collectionId); // Assuming this is how you fetch the collection object
+        res.render("ngo/feedback", { title: "Feedback", collection }); // Pass the collection object to the view
+    } catch (err) {
+        console.log(err);
+        req.flash("error", "Some error occurred on the server.")
+        res.redirect("back");
+    }
+});
+
+
+router.post("/ngo/feedback/:collectionId", middleware.ensureNgoLoggedIn, async (req, res) => {
+    try {
+        const collectionId = req.params.collectionId;
+        const feedback = req.body.feedback;
+        const food = await Food.findByIdAndUpdate(collectionId, { adminToAgentMsg: feedback });
+        req.flash("success", "Feedback sent successfully");
+        res.redirect("/ngo/donations/previous");
+    } catch (err) {
+        console.log(err);
+        req.flash("error", "Some error occurred on the server.");
+        res.redirect("back");
+    }
+});
+
+
+
+module.exports = router;

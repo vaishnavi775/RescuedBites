@@ -8,12 +8,14 @@
 		<li><a href="/ngo/profile">My Profile</a></li>
 		<li><a href="/ngo/donations/pending">My Pending Collections</a></li>
 		<li><a href="/ngo/donations/previous">My Previous Collections</a></li>
+
 		<li><a href="/ngo/notification">Notifications         
 			<% const unreadCount = notifications.filter(notification => notification.status === 'unread').length; %>
 			<% if (unreadCount > 0) { %>
 				<span class="badge badge-info"><%= unreadCount %></span>
 			<% } %>
 		</a></li>		
+
 		<li><a href="/auth/logout" class="btn">Logout</a></li>
 	</ul>
 </div>
