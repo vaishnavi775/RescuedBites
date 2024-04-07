@@ -178,9 +178,9 @@
             const notifications = await Notification.find({ recipient: req.user._id, status: 'unread' }).exec();
 
             // req.flash("success", "Donation collected successfully");
-            // res.redirect(`/ngo/collection/view/${collectionId}`);
+            res.redirect(`/ngo/collection/view/${collectionId}`);
             // res.redirect(`/ngo/collection/view/${collectionId}?notifications=${JSON.stringify(notifications)}`);\        res.render("ngo/collectionView", { title: "Collection View", collectionId, notifications });
-            res.render("ngo/collectionView", { title: "Collection View", collectionId, notifications,notification });
+            //res.render("ngo/collectionView", { title: "Collection View", collectionId, notifications,notification });
 
 
         } catch (err) {
@@ -223,7 +223,8 @@ router.get("/ngo/feedback/:collectionId", middleware.ensureNgoLoggedIn, async (r
     try {
         const collectionId = req.params.collectionId;
         const collection = await Food.findById(collectionId); // Assuming this is how you fetch the collection object
-        res.render("ngo/feedback", { title: "Feedback", collection }); // Pass the collection object to the view
+        const notifications = await Notification.find({ recipient: req.user._id, status: 'unread' }).exec();
+        res.render("ngo/feedback", { title: "Feedback", collection, notifications:notifications }); // Pass the collection object to the view
     } catch (err) {
         console.log(err);
         req.flash("error", "Some error occurred on the server.")
