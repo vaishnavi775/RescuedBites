@@ -8,7 +8,7 @@
 			<h5 class="m-0 color-theme d-inline-block">Profile</h5>
 		</div>
 		
-		<form action="/admin/profile?_method=PUT" method="POST" class="w-75 border ms-3 my-3 p-4 bg-white rounded-2 shadow" style="min-width: 400px;">
+		<form action="/admin/profile?_method=PUT" method="POST" class="w-75 border ms-3 my-3 p-4 bg-white rounded-2 shadow" style="min-width: 400px;" onsubmit="return validatePhoneNumber()">
 			
 			<div class="row">
 				<div class="col-sm-6 mb-4">
@@ -45,10 +45,11 @@
 				<input type="text" name="admin[address]" class="form-control" id="address" placeholder="Enter address.." value="<%= currentUser.address %>">
 			</div>
 			
-			<div class="mb-4">
-				<label for="phone" class="form-label">Phone</label>
-				<input type="number" name="admin[phone]" class="form-control" id="phone" placeholder="Enter phone.." value="<%= currentUser.phone %>">
-			</div>
+            <div class="mb-4">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="number" name="donor[phone]" class="form-control" id="phone" placeholder="Enter phone.." value="<%= currentUser.phone %>" required>
+                <div id="phoneError" class="text-danger"></div>
+            </div>
 			
 			<button type="submit" class="btn w-75 d-block m-auto mt-4">Update</button>
 		</form>
@@ -57,3 +58,16 @@
 		
 	</div>
 </main>
+
+<script>
+    function validatePhoneNumber() {
+        var phoneInput = document.getElementById('phone');
+        var phone = phoneInput.value.trim();
+        var phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(phone)) {
+            document.getElementById('phoneError').innerText = "Phone number must be 10 numeric digits.";
+            return false;
+        }
+        return true;
+    }
+</script>

@@ -1,0 +1,25 @@
+<main>
+	<%- include('../partials/donorSidebar') %>
+	
+	<div id="main-wrapper"  >
+
+         <div class=" shadow-sm p-3">
+            <span class="me-3" id="sidebar-toggler-btn"><i class="fas fa-bars"></i></span>
+            <h5 class="m-0 color-theme d-inline-block" >Notifications</h5>
+        </div>
+        
+        <div id="notificationsList" style="margin:3rem 5rem;color:aliceblue">
+            <% notifications.forEach(notification => { %>
+                <div class="notification" >
+                    <span><%= notification.message %></span>
+                    <% if (notification.status === 'unread') { %>
+                        <span class="unread-label">Unread</span>
+                    <% } else { %>
+                        <span class="read-label">Read</span>    
+                    <% } %>
+                </div>
+            <% }); %>
+        </div>
+	</div>
+</main>
+

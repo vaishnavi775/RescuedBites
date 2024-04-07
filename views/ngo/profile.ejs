@@ -3,12 +3,12 @@
 	
 	<div id="main-wrapper">
 		
-		<div class="bg-white shadow-sm p-3">
+		<div class="shadow-sm p-3">
 			<span class="me-3" id="sidebar-toggler-btn"><i class="fas fa-bars"></i></span>
 			<h5 class="m-0 color-theme d-inline-block">Profile</h5>
 		</div>
 		
-		<form action="/ngo/profile?_method=PUT" method="POST" class="w-75 border ms-3 my-3 p-4 bg-white rounded-2 shadow" style="min-width: 400px;">
+		<form action="/ngo/profile?_method=PUT" method="POST" class="w-75 border  my-3 p-4  rounded-2 shadow prof"  onsubmit="return validatePhoneNumber()" >
 			
 			<div class="row">
 				<div class="col-sm-6 mb-4">
@@ -50,10 +50,12 @@
 				<input type="text" name="ngo[address]" class="form-control" id="address" placeholder="Enter address.." value="<%= currentUser.address %>">
 			</div>
 			
-			<div class="mb-4">
-				<label for="phone" class="form-label">Phone</label>
-				<input type="number" name="ngo[phone]" class="form-control" id="phone" placeholder="Enter phone.." value="<%= currentUser.phone %>">
-			</div>
+            
+            <div class="mb-4">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="number" name="donor[phone]" class="form-control" id="phone" placeholder="Enter phone.." value="<%= currentUser.phone %>" required>
+                <div id="phoneError" class="text-danger"></div>
+            </div>
 			
 			<button type="submit" class="btn w-75 d-block m-auto mt-4">Update</button>
 		</form>
@@ -62,3 +64,17 @@
 		
 	</div>
 </main>
+
+
+<script>
+    function validatePhoneNumber() {
+        var phoneInput = document.getElementById('phone');
+        var phone = phoneInput.value.trim();
+        var phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(phone)) {
+            document.getElementById('phoneError').innerText = "Phone number must be 10 numeric digits.";
+            return false;
+        }
+        return true;
+    }
+</script>

@@ -57,8 +57,9 @@ const middleware = {
 				return res.redirect("/ngo/dashboard");
 		}
 		next();
-	}
-	
+	},
+
+
 }
 
 module.exports = middleware;
