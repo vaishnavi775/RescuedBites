@@ -5,12 +5,17 @@ const User = require("../models/user.js");
 const Food = require("../models/food.js");
 const NGO = require("../models/ngo.js");
 const Donor = require("../models/donor.js");
+// Import required modules
+const bodyParser = require("body-parser");
+
+// Use middleware to parse URL-encoded form data
+router.use(bodyParser.urlencoded({ extended: true }));
 
 
 router.get("/ngo/dashboard", middleware.ensureNgoLoggedIn, async (req,res) => {
-    const numPendingDonations = await Food.countDocuments({ status: "pending" });
-    const numAcceptedDonations = await Food.countDocuments({ status: "accepted" });
-    const numCollectedDonations = await Food.countDocuments({ status: "collected" });
+    const numPendingDonations = await Food.countDocuments({status: "pending" });
+    const numAcceptedDonations = await Food.countDocuments({ ngo: req.user._id, status: "accepted" });
+    const numCollectedDonations = await Food.countDocuments({ ngo: req.user._id, status: "collected" });
     res.render("ngo/dashboard", {
         title: "Dashboard",
         numPendingDonations, numAcceptedDonations, numCollectedDonations
@@ -68,7 +73,7 @@ router.get("/ngo/donations/reject/:donationId", middleware.ensureNgoLoggedIn, as
 
 router.get("/ngo/donations/previous", middleware.ensureNgoLoggedIn, async (req, res) => {
     try {
-        const previousCollections = await Food.find({status: "collected" }).populate({
+        const previousCollections = await Food.find({ngo: req.user._id, status: "collected" }).populate({
             path: 'donor',
             model: User,
             select: '',
@@ -140,7 +145,7 @@ router.get("/ngo/collection/collect/:collectionId", middleware.ensureNgoLoggedIn
         
         // Save the updated food item
         await food.save();
-        console.log(food)
+        // console.log(food)
         req.flash("success", "Donation collected successfully");
         res.redirect(`/ngo/collection/view/${collectionId}`);
     } catch (err) {
@@ -148,6 +153,61 @@ router.get("/ngo/collection/collect/:collectionId", middleware.ensureNgoLoggedIn
         req.flash("error", "Some error occurred on the server.")
         res.redirect("back");
     }
+
+    // router.get("/ngo/donations/feedback/:donationId", middleware.ensureNgoLoggedIn, async (req, res) => {
+    //     try {
+    //         const donationId = req.params.donationId;
+    //         const donation = await Donation.findById(donationId);
+    //         res.render("ngo/feedback", { title: "Add Feedback", donation });
+    //     } catch (err) {
+    //         console.log(err);
+    //         req.flash("error", "Some error occurred on the server.")
+    //         res.redirect("back");
+    //     }
+    // });
+    
+    // router.post("/ngo/donations/feedback/:donationId", middleware.ensureNgoLoggedIn, async (req, res) => {
+    //     try {
+    //         const donationId = req.params.donationId;
+    //         const feedback = req.body.feedback;
+    //         await Donation.findByIdAndUpdate(donationId, { feedback: feedback });
+    //         req.flash("success", "Feedback added successfully");
+    //         res.redirect("/ngo/donations/previous");
+    //     } catch (err) {
+    //         console.log(err);
+    //         req.flash("error", "Some error occurred on the server.")
+    //         res.redirect("back");
+    //     }
+    // });
 });
+
+router.get("/ngo/feedback/:collectionId", middleware.ensureNgoLoggedIn, async (req, res) => {
+    try {
+        const collectionId = req.params.collectionId;
+        const collection = await Food.findById(collectionId); // Assuming this is how you fetch the collection object
+        res.render("ngo/feedback", { title: "Feedback", collection }); // Pass the collection object to the view
+    } catch (err) {
+        console.log(err);
+        req.flash("error", "Some error occurred on the server.")
+        res.redirect("back");
+    }
+});
+
+
+router.post("/ngo/feedback/:collectionId", middleware.ensureNgoLoggedIn, async (req, res) => {
+    try {
+        const collectionId = req.params.collectionId;
+        const feedback = req.body.feedback;
+        const food = await Food.findByIdAndUpdate(collectionId, { adminToAgentMsg: feedback });
+        req.flash("success", "Feedback sent successfully");
+        res.redirect("/ngo/donations/previous");
+    } catch (err) {
+        console.log(err);
+        req.flash("error", "Some error occurred on the server.");
+        res.redirect("back");
+    }
+});
+
+
 
 module.exports = router;

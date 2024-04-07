@@ -17,7 +17,7 @@ router.get("/donor/dashboard", middleware.ensureDonorLoggedIn, async (req,res) =
 	});
 });
 
-router.get("/donor/donate", middleware.ensureDonorLoggedIn, (req,res) => {
+router.get("/donor/donate", middleware.ensureDonorLoggedIn, async (req,res) => {
 	res.render("donor/donate", { title: "Donate" });
 });
 
@@ -43,7 +43,13 @@ router.post("/donor/donate", middleware.ensureDonorLoggedIn, async (req,res) => 
 router.get("/donor/donations/pending", middleware.ensureDonorLoggedIn, async (req,res) => {
 	try
 	{
-		const pendingDonations = await Food.find({ donor: req.user._id, status:["pending", "accepted"] }).populate("ngo")
+		//const pendingDonations = await Food.find({ donor: req.user._id, status:["pending", "accepted"] }).populate("ngo")
+		const pendingDonations = await Food.find({ donor: req.user._id, status:"pending" }).populate({
+            path: 'donor',
+            model: User,
+            select: '',
+
+        });  
 		res.render("donor/pendingDonations", { title: "Pending Donations", pendingDonations });
 	}
 	catch(err)
@@ -54,15 +60,18 @@ router.get("/donor/donations/pending", middleware.ensureDonorLoggedIn, async (re
 	}
 });
 
+
 router.get("/donor/donations/previous", middleware.ensureDonorLoggedIn, async (req,res) => {
 	try
 	{
-		const previousDonations = await Food.find({ donor: req.user._id, status: "collected" }).populate({
+		//const previousDonations = await Food.find({ donor: req.user._id, status: "collected" }).populate({
+		const previousDonations = await Food.find({ donor: req.user._id, status:"collected"}).populate({
             path: 'ngo',
             model: User,
             select: '',
-            
-        })
+
+    
+        });
 		res.render("donor/previousDonations", { title: "Previous Donations", previousDonations });
 	}
 	catch(err)
@@ -109,6 +118,19 @@ router.put("/donor/profile", middleware.ensureDonorLoggedIn, async (req,res) => 
 		res.redirect("back");
 	}
 	
+});
+
+// Donor Route to View Feedback
+router.get("/donor/donations/feedback/:collectionId", middleware.ensureDonorLoggedIn, async (req, res) => {
+    try {
+        const collectionId = req.params.collectionId;
+        const collection = await Food.findById(collectionId);
+        res.render("donor/previousDonations", { title: "Feedback", collection });
+    } catch (err) {
+        console.log(err);
+        req.flash("error", "Some error occurred on the server.")
+        res.redirect("back");
+    }
 });
 
 

@@ -26,7 +26,8 @@
 							<td> <%= previousCollections[i].donor.firstName + " " + previousCollections[i].donor.lastName %> </td>
 							<td> <%= previousCollections[i].donor.address %> </td>
 							<td> <%= previousCollections[i].donor.phone %> </td>
-							<td><a href="/ngo/collection/view/<%= previousCollections[i]._id %>" class="btn">View</a></td>
+							<td><a href="/ngo/collection/view/<%= previousCollections[i]._id %>" class="btn">View</a>
+							<a href="/ngo/feedback/<%= previousCollections[i]._id %>" class="btn">Add Feedback</a></td>
 						</tr>
 					<% } %>
 				</tbody>
