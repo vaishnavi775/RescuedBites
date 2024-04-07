@@ -85,84 +85,106 @@ router.get("/auth/logout", (req,res) => {
 
 
 
-// Request password reset (Step 1)
-router.get('/forgot-password', (req, res) => {
-    res.render('forgot-password');
-});
+    // Request password reset (Step 1)
+    router.get('/auth/forgot-password', (req, res) => {
+        res.render('auth/forgot-password');
+    });
 
-router.post('/forgot-password', async (req, res) => {
-    const { email } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        if (!user) {
-            // Handle case where email is not found
-            return res.render('forgot-password', { error: 'Email not found' });
+    router.post('/auth/forgot-password', async (req, res) => {
+        const { email } = req.body;
+        try {
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.render('auth/forgot-password', { error: 'Email not found' });
+            }
+            
+            // Generate token
+            const token = crypto.randomBytes(20).toString('hex');
+            // Set token expiry time (e.g., 1 hour)
+            const tokenExpiry = Date.now() + 3600000; // 1 hour
+            
+            // Store token and expiry time in user document
+            user.resetPasswordToken = token;
+            user.resetPasswordExpires = tokenExpiry;
+            await user.save();
+            
+            // Send email with reset link
+            const transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com', // Your SMTP server host
+                port: 465, 
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL_USER, // Your email address
+                    pass: process.env.EMAIL_PASSWORD // Your email password
+                }
+            });
+            
+            // Configure email options
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Password Reset',
+                html: `<p>Click <a href="http://localhost:5001/auth/reset-password?token=${token}">here</a> to reset your password</p>`
+            };
+    
+            // Send email
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                    return res.render('auth/forgot-password', { error: 'Failed to send email. Please try again later.' });
+                } else {
+                    console.log('Email sent:', info.response);
+                    return res.render('auth/forgot-password', { success: 'Check your email for instructions' });
+                }
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.render('auth/forgot-password', { error: 'Something went wrong. Please try again later.' });
         }
-        // Generate token
-        const token = crypto.randomBytes(20).toString('hex');
-        // Set token expiry time (e.g., 1 hour)
-        user.resetPasswordToken = token;
-        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-        await user.save();
-        // Send email with reset link
-        const transporter = nodemailer.createTransport({
-            // Configure your email service here
-        });
-        const mailOptions = {
-            // Configure email options (sender, receiver, subject, etc.)
-            // Include the reset password link in the email body
-        };
-        await transporter.sendMail(mailOptions);
-        res.render('forgot-password', { success: 'Check your email for instructions' });
-    } catch (error) {
-        console.error('Error:', error);
-        res.render('forgot-password', { error: 'Something went wrong' });
-    }
-});
-
-// Reset password (Steps 4 and 5)
-router.get('/reset-password/:token', async (req, res) => {
-    const { token } = req.params;
-    try {
-        const user = await User.findOne({
-            resetPasswordToken: token,
-            resetPasswordExpires: { $gt: Date.now() } // Check token expiry
-        });
-        if (!user) {
-            // Handle invalid or expired token
-            return res.redirect('/forgot-password');
+    });
+    
+    // Reset password (Steps 4 and 5)
+    router.get('/auth/reset-password/:token', async (req, res) => {
+        const { token } = req.params;
+        try {
+            const user = await User.findOne({
+                resetPasswordToken: token,
+                resetPasswordExpires: { $gt: Date.now() } // Check token expiry
+            });
+            if (!user) {
+                // Handle invalid or expired token
+                return res.redirect('auth/forgot-password');
+            }
+            res.render('reset-password', { token });
+        } catch (error) {
+            console.error('Error:', error);
+            res.redirect('auth/forgot-password');
         }
-        res.render('reset-password', { token });
-    } catch (error) {
-        console.error('Error:', error);
-        res.redirect('/forgot-password');
-    }
-});
+    });
 
-router.post('/reset-password/:token', async (req, res) => {
-    const { token } = req.params;
-    const { password } = req.body;
-    try {
-        const user = await User.findOneAndUpdate({
-            resetPasswordToken: token,
-            resetPasswordExpires: { $gt: Date.now() }
-        }, {
-            password: newPassword,
-            resetPasswordToken: null,
-            resetPasswordExpires: null
-        });
-        if (!user) {
-            // Handle invalid or expired token
-            return res.redirect('/forgot-password');
+    router.post('/auth/reset-password/:token', async (req, res) => {
+        const { token } = req.params;
+        const { password } = req.body;
+        try {
+            const user = await User.findOneAndUpdate({
+                resetPasswordToken: token,
+                resetPasswordExpires: { $gt: Date.now() }
+            }, {
+                password: newPassword,
+                resetPasswordToken: null,
+                resetPasswordExpires: null
+            });
+            if (!user) {
+                // Handle invalid or expired token
+                return res.redirect('auth/forgot-password');
+            }
+            res.render('login', { message: 'Password reset successful. You can now login.' });
+        } catch (error) {
+            console.error('Error:', error);
+            res.redirect('auth/forgot-password');
         }
-        res.render('login', { message: 'Password reset successful. You can now login.' });
-    } catch (error) {
-        console.error('Error:', error);
-        res.redirect('/forgot-password');
-    }
-});
-
-module.exports = router;
+    });
 
 
-module.exports = router;
+
+    module.exports = router;

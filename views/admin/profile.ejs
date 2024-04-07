@@ -1,29 +1,24 @@
 <main>
-	<%- include('../partials/ngoSidebar') %>
+	<%- include('../partials/adminSidebar') %>
 	
 	<div id="main-wrapper">
 		
-		<div class="shadow-sm p-3">
+		<div class="bg-white shadow-sm p-3">
 			<span class="me-3" id="sidebar-toggler-btn"><i class="fas fa-bars"></i></span>
 			<h5 class="m-0 color-theme d-inline-block">Profile</h5>
 		</div>
 		
-		<form action="/ngo/profile?_method=PUT" method="POST" class="w-75 border  my-3 p-4  rounded-2 shadow prof"  onsubmit="return validatePhoneNumber()" >
+		<form action="/admin/profile?_method=PUT" method="POST" class="w-75 border ms-3 my-3 p-4 bg-white rounded-2 shadow" style="min-width: 400px;" onsubmit="return validatePhoneNumber()">
 			
 			<div class="row">
 				<div class="col-sm-6 mb-4">
 					<label for="first-name" class="form-label">First Name</label>
-					<input type="text" name="ngo[firstName]" class="form-control" id="first-name" placeholder="Enter first name.." value="<%= currentUser.firstName %>" required>
+					<input type="text" name="admin[firstName]" class="form-control" id="first-name" placeholder="Enter first name.." value="<%= currentUser.firstName %>" required>
 				</div>
 				
 				<div class="col-sm-6 mb-4">
 					<label for="last-name" class="form-label">Last Name</label>
-					<input type="text" name="ngo[lastName]" class="form-control" id="last-name" placeholder="Enter last name.." value="<%= currentUser.lastName %>" required>
-				</div>
-
-				<div class="col-sm-6 mb-4">
-					<label for="organisation-name" class="form-label">Last Name</label>
-					<input type="text" name="ngo[organisationName]" class="form-control" id="organisation-name" placeholder="Enter Organisation name.." value="<%= currentUser.organisationName %>">
+					<input type="text" name="admin[lastName]" class="form-control" id="last-name" placeholder="Enter last name.." value="<%= currentUser.lastName %>" required>
 				</div>
 			</div>
 			
@@ -36,21 +31,20 @@
 			<div class="mb-4">
 				<span class="d-inline-block me-2">Gender:</span>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="ngo[gender]" id="male" value="male" <% if(currentUser.gender=='male'){%> checked <%}%> >
+					<input class="form-check-input" type="radio" name="admin[gender]" id="male" value="male" <% if(currentUser.gender=='male'){%> checked <%}%> >
 					<label class="form-check-label" for="male">Male</label>
 				</div>
 				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="ngo[gender]" id="female" value="female" <% if(currentUser.gender=='female'){%> checked <%}%> >
+					<input class="form-check-input" type="radio" name="admin[gender]" id="female" value="female" <% if(currentUser.gender=='female'){%> checked <%}%> >
 					<label class="form-check-label" for="female">Female</label>
 				</div>
 			</div>
 			
 			<div class="mb-4">
 				<label for="address" class="form-label">Address</label>
-				<input type="text" name="ngo[address]" class="form-control" id="address" placeholder="Enter address.." value="<%= currentUser.address %>">
+				<input type="text" name="admin[address]" class="form-control" id="address" placeholder="Enter address.." value="<%= currentUser.address %>">
 			</div>
 			
-            
             <div class="mb-4">
                 <label for="phone" class="form-label">Phone</label>
                 <input type="number" name="donor[phone]" class="form-control" id="phone" placeholder="Enter phone.." value="<%= currentUser.phone %>" required>
@@ -64,7 +58,6 @@
 		
 	</div>
 </main>
-
 
 <script>
     function validatePhoneNumber() {

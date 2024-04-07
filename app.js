@@ -7,7 +7,7 @@ const expressLayouts = require("express-ejs-layouts");
 const methodOverride = require("method-override");
 const homeRoutes = require("./routes/home.js");
 const authRoutes = require("./routes/auth.js");
-// const adminRoutes = require("./routes/admin.js");
+const adminRoutes = require("./routes/admin.js");
 const donorRoutes = require("./routes/donor.js");
 const ngoRoutes = require("./routes/ngo.js");
 
@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 app.use(homeRoutes);
 app.use(authRoutes);
 app.use(donorRoutes);
-// app.use(adminRoutes);
+app.use(adminRoutes);
 app.use(ngoRoutes);
 app.use((req,res) => {
 	res.status(404).render("404page", { title: "Page not found" });

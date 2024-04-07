@@ -10,9 +10,13 @@
 		<li><a href="/donor/donate">Donate</a></li>
 		<li><a href="/donor/donations/pending">My Pending Donations</a></li>
 		<li><a href="/donor/donations/previous">My Previous Donations</a></li>
-		<li><a href="/donor/notification">Notifications</a></li>		
-
+		<li><a href="/donor/notification">Notifications  
+			<% const unreadCount = notifications.filter(notification => notification.status === 'unread').length; %>
+			<% if (unreadCount > 0) { %>
+				<span class="badge badge-info"><%= unreadCount %></span>
+			<% } %>
+		</a></li>
 		<li><a href="/auth/logout" class="btn">Logout</a></li>
 	</ul>	
-</div> 
+</div> 	
 
