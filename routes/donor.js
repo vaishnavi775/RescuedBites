@@ -72,7 +72,8 @@ router.post("/donor/donate", middleware.ensureDonorLoggedIn, async (req, res) =>
         req.flash("success", "Donation request sent successfully");
 
 		const notifications = await Notification.find({ recipient: req.user._id, status: 'unread' }).exec();
-        res.render("donor/donate", { title: "Donate", notifications: notifications });
+        //res.render("donor/donate", { title: "Donate", notifications: notifications });
+		res.redirect("/donor/donations/pending");
 
     } catch (err) {
         console.log(err);
