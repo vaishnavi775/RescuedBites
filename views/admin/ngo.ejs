@@ -17,6 +17,8 @@
 						<th scope="col">Email</th>
 						<th scope="col">Phone</th>
 						<th scope="col">Joined time</th>
+						<th scope="col">Actions</th>
+						<th scope="col"> </th>
 					</tr>
 				</thead>
 				<tbody>
@@ -27,10 +29,11 @@
 							<td> <%= agents[i].email %> </td>
 							<td> <%= agents[i].phone %> </td>
 							<td> <%= agents[i].joinedTime.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short"}) %> </td>
-                            <td><a href="/admin/ngo/<%= agents[i]._id %>" class="btn">View</a></td>
+                            <td><a href="/admin/ngo/<%= agents[i]._id %>" class="btn">View</a>
 							<form action="/admin/ngo/<%= agents[i]._id %>?_method=DELETE" method="POST">
-								<td><button class="btn">Delete</button></td>
+								<td><button class="btn">Delete</button>
 							</form>
+							</td>
                             
 					<% } %>
 				</tbody>

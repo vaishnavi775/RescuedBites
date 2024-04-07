@@ -17,7 +17,7 @@ router.get("/donor/dashboard", middleware.ensureDonorLoggedIn, async (req,res) =
 	});
 });
 
-router.get("/donor/donate", middleware.ensureDonorLoggedIn, (req,res) => {
+router.get("/donor/donate", middleware.ensureDonorLoggedIn, async (req,res) => {
 	res.render("donor/donate", { title: "Donate" });
 });
 
@@ -58,6 +58,7 @@ router.get("/donor/donations/pending", middleware.ensureDonorLoggedIn, async (re
 		res.redirect("back");
 	}
 });
+
 
 router.get("/donor/donations/previous", middleware.ensureDonorLoggedIn, async (req,res) => {
 	try
@@ -114,6 +115,19 @@ router.put("/donor/profile", middleware.ensureDonorLoggedIn, async (req,res) => 
 		res.redirect("back");
 	}
 	
+});
+
+// Donor Route to View Feedback
+router.get("/donor/donations/feedback/:collectionId", middleware.ensureDonorLoggedIn, async (req, res) => {
+    try {
+        const collectionId = req.params.collectionId;
+        const collection = await Food.findById(collectionId);
+        res.render("donor/previousDonations", { title: "Feedback", collection });
+    } catch (err) {
+        console.log(err);
+        req.flash("error", "Some error occurred on the server.")
+        res.redirect("back");
+    }
 });
 
 
