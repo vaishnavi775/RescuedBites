@@ -23,15 +23,16 @@
 					<% for(let i=0; i<pendingCollections.length; i++) { %>
 						<tr>
 							<th scope="row"> <%= i+1 %> </th>
-							<td><%= pendingCollections[i].donor.firstName + " " + pendingCollections[i].donor.lastName || "Unknown Donor" %></td>
-							<td> <%= pendingCollections[i].donor.address %> </td>
-							<td> <%= pendingCollections[i].donor.phone %> </td>
+							<td><%= pendingCollections[i].donor ? (pendingCollections[i].donor.firstName + " " + pendingCollections[i].donor.lastName || "Unknown Donor") : "Unknown Donor" %></td>
+							<td> <%= pendingCollections[i].donor ? pendingCollections[i].donor.address : "Unknown Address" %> </td>
+							<td> <%= pendingCollections[i].donor ? pendingCollections[i].donor.phone : "Unknown Phone" %> </td>
 							<td>
 								<a href="/ngo/collection/view/<%= pendingCollections[i]._id %>" class="btn">View</a>
 								<a href="/ngo/collection/collect/<%= pendingCollections[i]._id %>" class="btn">Collect</a>
 							</td>
 						</tr>
 					<% } %>
+					
 				</tbody>
 			</table>
 		</div>

@@ -85,106 +85,268 @@ router.get("/auth/logout", (req,res) => {
 
 
 
-    // Request password reset (Step 1)
-    router.get('/auth/forgot-password', (req, res) => {
-        res.render('auth/forgot-password');
-    });
+//         router.get('/auth/forgot-password', (req, res) => {
+//             res.render('auth/forgot-password');
+//         });
 
-    router.post('/auth/forgot-password', async (req, res) => {
-        const { email } = req.body;
-        try {
-            const user = await User.findOne({ email });
-            if (!user) {
-                return res.render('auth/forgot-password', { error: 'Email not found' });
-            }
+//         router.post('/auth/forgot-password', async (req, res) => {
+//             const { email } = req.body;
+//             try {
+//                 const user = await User.findOne({ email });
+//                 if (!user) {
+//                     return res.render('auth/forgot-password', { error: 'Email not found' });
+//                 }
+                
+//                 const token = crypto.randomBytes(20).toString('hex');
+//                 const tokenExpiry = Date.now() + 3600000; 
+                
+//                 user.resetPasswordToken = token;
+//                 user.resetPasswordExpires = tokenExpiry;
+//                 await user.save();
+                
+//                 const transporter = nodemailer.createTransport({
+//                     host: 'smtp.gmail.com', 
+//                     port: 465, 
+//                     service: 'gmail',
+//                     auth: {
+//                         user: process.env.EMAIL_USER, 
+//                         pass: process.env.EMAIL_PASSWORD 
+//                     }
+//                 });
+                
+        
+//                 const mailOptions = {
+//                     from: process.env.EMAIL_USER,
+//                     to: email,
+//                     subject: 'Password Reset',
+//                     html: `<p>Click <a href="http://localhost:5001/auth/reset-password/${token}">here</a> to reset your password</p>`
+//                 };
+        
             
-            // Generate token
-            const token = crypto.randomBytes(20).toString('hex');
-            // Set token expiry time (e.g., 1 hour)
-            const tokenExpiry = Date.now() + 3600000; // 1 hour
-            
-            // Store token and expiry time in user document
-            user.resetPasswordToken = token;
-            user.resetPasswordExpires = tokenExpiry;
-            await user.save();
-            
-            // Send email with reset link
-            const transporter = nodemailer.createTransport({
-                host: 'smtp.gmail.com', // Your SMTP server host
-                port: 465, 
-                service: 'gmail',
-                auth: {
-                    user: process.env.EMAIL_USER, // Your email address
-                    pass: process.env.EMAIL_PASSWORD // Your email password
-                }
-            });
-            
-            // Configure email options
-            const mailOptions = {
-                from: process.env.EMAIL_USER,
-                to: email,
-                subject: 'Password Reset',
-                html: `<p>Click <a href="http://localhost:5001/auth/reset-password?token=${token}">here</a> to reset your password</p>`
-            };
+//                 transporter.sendMail(mailOptions, (error, info) => {
+//                     if (error) {
+//                         console.error('Error sending email:', error);
+//                         return res.render('auth/forgot-password', { error: 'Failed to send email. Please try again later.' });
+//                     } else {
+//                         console.log('Email sent:', info.response);
+//                         return res.render('auth/forgot-password', { success: 'Check your email for instructions' });
+//                     }
+//                 });
+//             } catch (error) {
+//                 console.error('Error:', error);
+//                 res.render('auth/forgot-password', { error: 'Something went wrong. Please try again later.' });
+//             }
+//         });
     
-            // Send email
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.error('Error sending email:', error);
-                    return res.render('auth/forgot-password', { error: 'Failed to send email. Please try again later.' });
-                } else {
-                    console.log('Email sent:', info.response);
-                    return res.render('auth/forgot-password', { success: 'Check your email for instructions' });
-                }
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.render('auth/forgot-password', { error: 'Something went wrong. Please try again later.' });
+// // // GET route to render the reset password form
+// // router.get('/auth/reset-password/:token', async (req, res) => {
+// //     const { token } = req.params;
+// //     try {
+// //         const user = await User.findOne({
+// //             resetPasswordToken: token,
+// //             resetPasswordExpires: { $gt: Date.now() } // Check token expiry
+// //         });
+// //         if (!user) {
+// //             // Handle invalid or expired token
+// //             return res.redirect('/auth/forgot-password');
+// //         }
+// //         res.render('auth/reset-password', { token });
+// //     } catch (error) {
+// //         console.error('Error:', error);
+// //         res.redirect('/auth/forgot-password');
+// //     }
+// // });
+
+
+// // router.post('/auth/reset-password/:token', async (req, res) => {
+// //     const { token } = req.params;
+// //     const { password } = req.body; // Use password instead of newPassword
+// //     try {
+// //         const user = await User.findOne({
+// //             resetPasswordToken: token,
+// //             resetPasswordExpires: { $gt: Date.now() }
+// //         });
+// //         if (!user) {
+// //             return res.redirect('/auth/forgot-password');
+// //         }
+// //         // Update user's password and reset token fields
+// //         user.password = password; // Use password here
+// //         user.resetPasswordToken = null;
+// //         user.resetPasswordExpires = null;
+// //         await user.save();
+// //         res.render('auth/login', { message: 'Password reset successful. You can now login.' });
+// //     } catch (error) {
+// //         console.error('Error:', error);
+// //         res.redirect('/auth/forgot-password');
+// //     }
+// // });
+
+// router.get('/auth/reset-password/:token', async (req, res) => {
+//     const { token } = req.params;
+//     try {
+//         const user = await User.findOne({
+//             resetPasswordToken: token,
+//             resetPasswordExpires: { $gt: Date.now() } // Check token expiry
+//         });
+//         if (!user) {
+//             // Handle invalid or expired token
+//             return res.render('auth/forgot-password', { error: 'Invalid or expired token' });
+//         }
+//         res.render('auth/reset-password', { token });
+//     } catch (error) {
+//         console.error('Error:', error);
+//         res.render('auth/forgot-password', { error: 'Something went wrong. Please try again later.' });
+//     }
+// });
+
+// router.post('/auth/reset-password/:token', async (req, res) => {
+//     const { token } = req.params;
+//     const { email, password } = req.body;
+//     try {
+//         // Find the user with the given token, email, and a valid expiry date
+//         const user = await User.findOne({
+//             email: email, // Ensure the email matches
+//             resetPasswordToken: token,
+//             resetPasswordExpires: { $gt: Date.now() }
+//         });
+
+//         // If no user found, render the forgot-password page with an error message
+//         if (!user) {
+//             return res.render('auth/forgot-password', { error: 'Invalid or expired token' });
+//         }
+
+//         // Update user's password using bcrypt
+//         const salt = bcrypt.genSaltSync(10);
+//         const hash = bcrypt.hashSync(password, salt);
+//         user.password = hash;
+
+//         // Clear reset password fields
+//         user.resetPasswordToken = null;
+//         user.resetPasswordExpires = null;
+
+//         // Save the updated user object
+//         const savedUser = await user.save();
+
+//         // Render the login page with a success message
+//         return res.render('auth/login', { message: 'Password reset successful. You can now login.' });
+//     } catch (error) {
+//         console.error('Error:', error);
+//         return res.render('auth/reset-password', { token, error: 'Something went wrong. Please try again later.' });
+//     }
+// });
+
+
+router.get('/auth/forgot-password', (req, res) => {
+    res.render('auth/forgot-password');
+});
+
+router.post('/auth/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    try {
+        // Find the user with the provided email
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.render('auth/forgot-password', { error: 'Email not found' });
         }
-    });
+        
+        // Generate a random token
+        const token = crypto.randomBytes(20).toString('hex');
+        const tokenExpiry = Date.now() + 3600000; // Token expiry in one hour
+        
+        // Store the token and its expiry in the user document
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = tokenExpiry;
+        await user.save();
+        
+        // Create nodemailer transporter
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com', 
+            port: 465, 
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER, 
+                pass: process.env.EMAIL_PASSWORD 
+            }
+        });
+        
+        // Compose email message
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: 'Password Reset',
+            html: `<p>Click <a href="http://localhost:5001/auth/reset-password/${token}">here</a> to reset your password</p>`
+        };
     
-    // Reset password (Steps 4 and 5)
-    router.get('/auth/reset-password/:token', async (req, res) => {
-        const { token } = req.params;
-        try {
-            const user = await User.findOne({
-                resetPasswordToken: token,
-                resetPasswordExpires: { $gt: Date.now() } // Check token expiry
-            });
-            if (!user) {
-                // Handle invalid or expired token
-                return res.redirect('auth/forgot-password');
+        // Send email
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error);
+                return res.render('auth/forgot-password', { error: 'Failed to send email. Please try again later.' });
+            } else {
+                console.log('Email sent:', info.response);
+                return res.render('auth/forgot-password', { success: 'Check your email for instructions' });
             }
-            res.render('reset-password', { token });
-        } catch (error) {
-            console.error('Error:', error);
-            res.redirect('auth/forgot-password');
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.render('auth/forgot-password', { error: 'Something went wrong. Please try again later.' });
+    }
+});
+
+router.get('/auth/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    try {
+        // Find the user with the given token and a valid expiry date
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() } // Check token expiry
+        });
+        if (!user) {
+            // Handle invalid or expired token
+            return res.render('auth/forgot-password', { error: 'Invalid or expired token' });
         }
-    });
+        // Pass the token to the reset password form along with the user's email
+        res.render('auth/reset-password', { token, email: user.email });
+    } catch (error) {
+        console.error('Error:', error);
+        res.render('auth/forgot-password', { error: 'Something went wrong. Please try again later.' });
+    }
+});
 
-    router.post('/auth/reset-password/:token', async (req, res) => {
-        const { token } = req.params;
-        const { password } = req.body;
-        try {
-            const user = await User.findOneAndUpdate({
-                resetPasswordToken: token,
-                resetPasswordExpires: { $gt: Date.now() }
-            }, {
-                password: newPassword,
-                resetPasswordToken: null,
-                resetPasswordExpires: null
-            });
-            if (!user) {
-                // Handle invalid or expired token
-                return res.redirect('auth/forgot-password');
-            }
-            res.render('login', { message: 'Password reset successful. You can now login.' });
-        } catch (error) {
-            console.error('Error:', error);
-            res.redirect('auth/forgot-password');
+router.post('/auth/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+    try {
+        // Find the user with the given token and a valid expiry date
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+        console.log(`vals : ${user.resetPasswordToken} \n ${user.resetPasswordExpires}`)
+        // If no user found, render the forgot-password page with an error message
+        if (!user) {
+            return res.render('auth/forgot-password', { error: 'Invalid or expired token' });
         }
-    });
+
+        // Update user's password using bcrypt
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(password, salt);
+        user.password = hash;
+
+        // Clear reset password fields
+        // user.resetPasswordToken = null;
+        // user.resetPasswordExpires = null;
+
+        // Save the updated user object
+        await user.save();
+
+        // Render the login page with a success message
+        return res.render('auth/login', { message: 'Password reset successful. You can now login.' });
+    } catch (error) {
+        console.error('Error:', error);
+        return res.render('auth/reset-password', { token, error: 'Something went wrong. Please try again later.' });
+    }
+});
 
 
-
-    module.exports = router;
+module.exports = router;

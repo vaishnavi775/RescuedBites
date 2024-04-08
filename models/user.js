@@ -40,7 +40,13 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		enum: ["ngo", "donor","admin"],
 		required: true
-	}
+	},
+	resetPasswordToken: {
+        type: String
+    },
+    resetPasswordExpires: {
+        type: Date
+    }
 	
 });
 
