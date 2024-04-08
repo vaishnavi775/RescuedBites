@@ -176,7 +176,7 @@
             // req.flash("success", "Donation collected successfully");
             // res.redirect(`/ngo/collection/view/${collectionId}`);
             // res.redirect(`/ngo/collection/view/${collectionId}?notifications=${JSON.stringify(notifications)}`);\        res.render("ngo/collectionView", { title: "Collection View", collectionId, notifications });
-            res.render("ngo/collectionView", { title: "Collection View", collectionId, notifications,notification });
+            res.render("ngo/collection", { title: "Collection View", collectionId, notifications,notification,collection: collection });
 
 
         } catch (err) {
