@@ -152,14 +152,7 @@ router.get("/admin/donor/view/pending/:donorId", middleware.ensureAdminLoggedIn,
 	try
 	{
 		const donorId = req.params.donorId;
-		const donation = await Food.find({donor : donorId , status : "pending"}).populate({
-            path: 'ngo',
-            model: User,
-            select: '',
-            
-        });
-		
-		console.log(donation);
+		const donation = await Food.find({donor : donorId , status : "pending"});
 		res.render("admin/donationdonor", { title: "Donation details", donation, donorId});
 	}
 	catch(err)
@@ -169,42 +162,20 @@ router.get("/admin/donor/view/pending/:donorId", middleware.ensureAdminLoggedIn,
 		res.redirect("back");
 	}
 });
-router.get("/admin/donor/view/pending/:donorId", middleware.ensureAdminLoggedIn, async (req,res) => {
-	try
-	{
-		const donorId = req.params.donorId;
-		const donation = await Food.find({donor : donorId , status : "pending"}).populate({
-            path: 'ngo',
-            model: User,
-            select: '',
-            
-        });
-		
-		console.log(donation);
-		res.render("admin/donationdonor", { title: "Donation details", donation, donorId});
-	}
-	catch(err)
-	{
-		console.log(err);
-		req.flash("error", "Some error occurred on the server.")
-		res.redirect("back");
-	}
+
+router.delete("/admin/donor/view/pending/:donorId/:donationId", middleware.ensureAdminLoggedIn, async (req, res) => {
+    try {
+        const donationId = req.params.donationId;
+        const donorId = req.params.donorId;
+        await Food.findByIdAndDelete(donationId);
+        res.redirect(`/admin/donor/view/pending/${donorId}`);
+    } catch (err) {
+        console.log(err);
+        req.flash("error", "Some error occurred on the server.");
+        res.redirect("back");
+    }
 });
-router.delete("/admin/donor/view/pending/:donorId/:donationId", middleware.ensureAdminLoggedIn, async (req,res) => {
-	try
-	{
-		const donationId = req.params.donationId;
-		const donorId = req.params.donorId;
-		await Food.findById(donationId)
-		res.redirect("/admin/donor/view/pending/:donorId")
-	}
-	catch(err)
-	{
-		console.log(err);
-		req.flash("error", "Some error occurred on the server.")
-		res.redirect("back");
-	}
-});
+
 router.get("/admin/profile", middleware.ensureAdminLoggedIn, (req,res) => {
 	res.render("admin/profile", { title: "My profile" });
 });
@@ -213,7 +184,7 @@ router.put("/admin/profile", middleware.ensureAdminLoggedIn, async (req,res) => 
 	try
 	{
 		const id = req.user._id;
-		const updateObj = req.body.admin;	// updateObj: {firstName, lastName, gender, address, phone}
+		const updateObj = req.body.admin;	
 		await User.findByIdAndUpdate(id, updateObj);
 		
 		req.flash("success", "Profile updated successfully");

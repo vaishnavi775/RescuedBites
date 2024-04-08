@@ -125,24 +125,6 @@ router.get("/donor/donations/previous", middleware.ensureDonorLoggedIn, async (r
 	}
 });
 
-router.get("/donor/donation/deleteRejected/:donationId", async (req,res) => {
-	try
-	{
-		const donationId = req.params.donationId;
-		await Donation.findByIdAndDelete(donationId);
-		const notifications = await Notification.find({ recipient: req.user._id, status: 'unread' }).exec();
-        
-        res.redirect(`/donor/donations/pending?notifications=${JSON.stringify(notifications)}`);		
-
-	}
-	catch(err)
-	{
-		console.log(err);
-		req.flash("error", "Some error occurred on the server.")
-		res.redirect("back");
-	}
-});
-
 router.get("/donor/profile", middleware.ensureDonorLoggedIn, async (req,res) => {
     try {
         const notifications = await Notification.find({ recipient: req.user._id, status: 'unread' }).exec();

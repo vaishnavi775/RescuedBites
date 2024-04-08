@@ -43,12 +43,7 @@
 							<span class="text-pending">Your donation request hasn't been collected yet.</span>
 						<% } %>
 					</div>
-					
-					<% if(pendingDonations[i].status == "rejected") { %>
-						<div class="mb-2">
-							<a class="btn" href="/donor/donation/deleteRejected/<%= pendingDonations[i]._id %>">Okay</a>
-						</div>
-					<% } %>
+
 					
 				</div>
 			<% } %>
