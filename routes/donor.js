@@ -32,6 +32,7 @@ router.get("/donor/dashboard", middleware.ensureDonorLoggedIn, async (req,res) =
 	});
 });
 
+
 router.get("/donor/donate", middleware.ensureDonorLoggedIn, async (req, res) => {
     try {
         const notifications = await Notification.find({ recipient: req.user._id, status: 'unread' }).exec();
@@ -42,6 +43,7 @@ router.get("/donor/donate", middleware.ensureDonorLoggedIn, async (req, res) => 
         req.flash("error", "Some error occurred on the server.")
         res.redirect("back");
     }
+
 });
 
 
@@ -70,7 +72,8 @@ router.post("/donor/donate", middleware.ensureDonorLoggedIn, async (req, res) =>
         req.flash("success", "Donation request sent successfully");
 
 		const notifications = await Notification.find({ recipient: req.user._id, status: 'unread' }).exec();
-        res.render("donor/donate", { title: "Donate", notifications: notifications });
+        //res.render("donor/donate", { title: "Donate", notifications: notifications });
+		res.redirect("/donor/donations/pending");
 
     } catch (err) {
         console.log(err);
@@ -101,6 +104,7 @@ router.get("/donor/donations/pending", middleware.ensureDonorLoggedIn, async (re
 	}
 });
 
+
 router.get("/donor/donations/previous", middleware.ensureDonorLoggedIn, async (req,res) => {
 	try
 	{
@@ -112,24 +116,6 @@ router.get("/donor/donations/previous", middleware.ensureDonorLoggedIn, async (r
         });
 		const notifications = await Notification.find({ recipient: req.user._id,status: 'unread' });
 		res.render("donor/previousDonations", { title: "Previous Donations", previousDonations ,notifications: notifications });
-	}
-	catch(err)
-	{
-		console.log(err);
-		req.flash("error", "Some error occurred on the server.")
-		res.redirect("back");
-	}
-});
-
-router.get("/donor/donation/deleteRejected/:donationId", async (req,res) => {
-	try
-	{
-		const donationId = req.params.donationId;
-		await Donation.findByIdAndDelete(donationId);
-		const notifications = await Notification.find({ recipient: req.user._id, status: 'unread' }).exec();
-        
-        res.redirect(`/donor/donations/pending?notifications=${JSON.stringify(notifications)}`);		
-
 	}
 	catch(err)
 	{
@@ -168,6 +154,19 @@ router.put("/donor/profile", middleware.ensureDonorLoggedIn, async (req,res) => 
 		res.redirect("back");
 	}
 	
+});
+
+// Donor Route to View Feedback
+router.get("/donor/donations/feedback/:collectionId", middleware.ensureDonorLoggedIn, async (req, res) => {
+    try {
+        const collectionId = req.params.collectionId;
+        const collection = await Food.findById(collectionId);
+        res.render("donor/previousDonations", { title: "Feedback", collection });
+    } catch (err) {
+        console.log(err);
+        req.flash("error", "Some error occurred on the server.")
+        res.redirect("back");
+    }
 });
 
 

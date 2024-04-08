@@ -32,7 +32,7 @@
 					</div>
 					
 					<div class="mb-2">
-						<span>Expiry Date:</span>
+						<span>Date:</span>
 						<span><%= pendingDonations[i].expiryDate.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short"}) %></span>
 					</div>
 					
@@ -43,12 +43,7 @@
 							<span class="text-pending">Your donation request hasn't been collected yet.</span>
 						<% } %>
 					</div>
-					
-					<% if(pendingDonations[i].status == "rejected") { %>
-						<div class="mb-2">
-							<a class="btn" href="/donor/donation/deleteRejected/<%= pendingDonations[i]._id %>">Okay</a>
-						</div>
-					<% } %>
+
 					
 				</div>
 			<% } %>

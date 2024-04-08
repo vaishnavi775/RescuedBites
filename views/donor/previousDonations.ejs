@@ -17,8 +17,8 @@
 						<th scope="col">Quantity</th>
 						<th scope="col">Status</th>
 						<th scope="col">Organisation Name</th>
-						<th scope="col">Agent assigned</th>
 						<th scope="col">Collection Time</th>
+						<th scope="col">Feedback from NGO</th>
 					</tr>
 				</thead>
 				<tbody >
@@ -28,10 +28,14 @@
 							<td> <%= previousDonations[i].foodName %> </td>
 							<td> <%= previousDonations[i].quantity %> </td>
 							<td class="fw-bold text-<%= previousDonations[i].status %>"> <%= previousDonations[i].status %> </td>
-							<td> <%=previousDonations[i].organisationName%> </td>
-							<%=console.log(previousDonations[i].organisationName)%>
 							<td> <%= previousDonations[i].ngo.firstName + " " + previousDonations[i].ngo.lastName %> </td>
 							<td> <%= previousDonations[i].collectionTime.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short"}) %> </td>
+							<td><% if(previousDonations[i].adminToAgentMsg != "") { %>
+								<div class="mb-2">
+									<div class="ms-3"><%= previousDonations[i].adminToAgentMsg %></div>
+								</div>
+							<% } %></td>
+
 						</tr>
 					<% } %>
 				</tbody>

@@ -45,7 +45,7 @@
 
 			<% if(donation[i].status == "pending") { %>
 				<div class="mb-2">
-					<form action="/admin/donor/view/pending/<%=donorId %>/<%=donation[i]._id %>?_method=DELETE" method="POST">
+					<form action="/admin/donor/view/pending/<%=donorId%>/<%=donation[i]._id %>?_method=DELETE" method="POST">
 						<td><button class="btn">Remove Donation</button></td>
 					</form>
 				</div>
