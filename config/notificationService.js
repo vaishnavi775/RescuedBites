@@ -17,7 +17,16 @@ class NotificationService {
             throw error;
         }
     }
-
+    static async getUnreadNotificationCount(userId) {
+        try {
+            const unreadCount = await Notification.countDocuments({ recipient: userId, status: 'unread' });
+            return unreadCount;
+        } catch (error) {
+            console.error('Error getting unread notification count:', error);
+            throw error;
+        }
+    }
 }
+
 
 module.exports = NotificationService;
