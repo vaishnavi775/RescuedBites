@@ -58,23 +58,6 @@
 
  
 
-    router.get("/ngo/donations/reject/:donationId", middleware.ensureNgoLoggedIn, async (req,res) => {
-        try
-        {
-            const donationId = req.params.donationId;
-            await Food.findByIdAndUpdate(donationId, { status: "rejected" });
-            req.flash("success", "Donation rejected successfully");
-            
-            res.redirect(`/ngo/donations/pending`);
-        }
-        catch(err)
-        {
-            console.log(err);
-            req.flash("error", "Some error occurred on the server.")
-            res.redirect("back");
-        }
-    });
-
     router.get("/ngo/donations/previous", middleware.ensureNgoLoggedIn, async (req, res) => {
         try {
             const previousCollections = await Food.find({ngo: req.user._id,status: "collected" }).populate({
@@ -177,11 +160,7 @@
             console.log(notification);
             const notifications = await Notification.find({ recipient: req.user._id, status: 'unread' }).exec();
 
-            // req.flash("success", "Donation collected successfully");
             res.redirect(`/ngo/collection/view/${collectionId}`);
-            // res.redirect(`/ngo/collection/view/${collectionId}?notifications=${JSON.stringify(notifications)}`);\        res.render("ngo/collectionView", { title: "Collection View", collectionId, notifications });
-            //res.render("ngo/collectionView", { title: "Collection View", collectionId, notifications,notification });
-
 
         } catch (err) {
             console.log(err);
@@ -191,33 +170,6 @@
 
     });
     
-
-    // router.get("/ngo/donations/feedback/:donationId", middleware.ensureNgoLoggedIn, async (req, res) => {
-    //     try {
-    //         const donationId = req.params.donationId;
-    //         const donation = await Donation.findById(donationId);
-    //         res.render("ngo/feedback", { title: "Add Feedback", donation });
-    //     } catch (err) {
-    //         console.log(err);
-    //         req.flash("error", "Some error occurred on the server.")
-    //         res.redirect("back");
-    //     }
-    // });
-    
-    // router.post("/ngo/donations/feedback/:donationId", middleware.ensureNgoLoggedIn, async (req, res) => {
-    //     try {
-    //         const donationId = req.params.donationId;
-    //         const feedback = req.body.feedback;
-    //         await Donation.findByIdAndUpdate(donationId, { feedback: feedback });
-    //         req.flash("success", "Feedback added successfully");
-    //         res.redirect("/ngo/donations/previous");
-    //     } catch (err) {
-    //         console.log(err);
-    //         req.flash("error", "Some error occurred on the server.")
-    //         res.redirect("back");
-    //     }
-    // });
-
 
 router.get("/ngo/feedback/:collectionId", middleware.ensureNgoLoggedIn, async (req, res) => {
     try {
