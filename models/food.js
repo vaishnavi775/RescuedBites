@@ -13,7 +13,7 @@ const foodSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    expiryDate: {
+    cookingDate: {
         type: Date,
         required: true,
     },
@@ -29,8 +29,8 @@ const foodSchema = new mongoose.Schema({
         enum: ["pending", "accepted","collected"],
         required: true
     },
-    donorToAdminMsg: String,
-    adminToAgentMsg: String,
+    donorToNgoMsg: String,
+    ngoToDonorMsg: String,
     collectionTime: {
         type: Date,
     },

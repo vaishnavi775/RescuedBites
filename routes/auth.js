@@ -47,10 +47,20 @@ router.post("/auth/signup", middleware.ensureNotLoggedIn, async (req,res) => {
 		}
 		
 		const newUser = new User({ firstName, lastName, email, password:password1, role });
+        const newNGO = new NGO({user: newUser._id});
+        const newDonor = new Donor({user: newUser._id});
 		const salt = bcrypt.genSaltSync(10);
 		const hash = bcrypt.hashSync(newUser.password, salt);
 		newUser.password = hash;
 		await newUser.save();
+        if (newUser.role == "ngo")
+        {
+            await newNGO.save();
+        }
+        else if (newUser.role == "donor")
+        {
+            await newDonor.save();
+        }
 		req.flash("success", "You are successfully registered and can log in.");
 		res.redirect("/auth/login");
 	}
@@ -274,7 +284,10 @@ router.post('/auth/forgot-password', async (req, res) => {
             from: process.env.EMAIL_USER,
             to: user.email,
             subject: 'Password Reset',
-            html: `<p>Click <a href="http://localhost:5001/auth/reset-password/${token}">here</a> to reset your password</p>`
+            html: `<h2>Seems like you have been logged out of your account!</h2> 
+            <h3>We have got you covered, kindly proceed with the further instructions to continue donating!</h3><br>
+            <hr>
+            <h3>Click <a href="http://localhost:5001/auth/reset-password/${token}">here</a> to reset your password</h3>`
         };
     
         // Send email

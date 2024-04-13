@@ -3,6 +3,7 @@ const router = express.Router();
 const middleware = require("../middleware/index.js");
 const User = require("../models/user.js");
 const Food = require("../models/food.js");
+const Donor = require("../models/donor.js");
 const Notification = require('../models/notification');
 const NotificationService = require('../config/notificationService');
 
@@ -53,9 +54,12 @@ router.post("/donor/donate", middleware.ensureDonorLoggedIn, async (req, res) =>
         const donation = req.body.donation;
         donation.status = "pending";
         donation.donor = req.user._id;
+        console.log(donation);
         const newDonation = new Food(donation);
         await newDonation.save();
-
+        await Donor.findOneAndUpdate({ user: req.user._id},{$push:{donatedFood: newDonation}},{upsert : true});
+        
+        
         const senderId = req.user._id;
         const senderfName = req.user.firstName;
         const senderlName = req.user.lastName;
