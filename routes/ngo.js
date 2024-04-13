@@ -94,8 +94,12 @@
         try
         {
             const id = req.user._id;
-            const updateObj = req.body.ngo;    // updateObj: {firstName, lastName, address, phone}
+            const updateObj = req.body.ngo;
+            const number = req.body.donor;
             await User.findByIdAndUpdate(id, updateObj);
+            await User.findByIdAndUpdate(id, number);
+            console.log(req.body);
+            console.log(updateObj);
             
 
             req.flash("success", "Profile updated successfully");
@@ -139,7 +143,6 @@
                 return res.redirect("back");
             }
 
-            
             food.status = "collected";
             food.collectionTime = Date.now();
             food.ngo = req.user._id; 
@@ -150,11 +153,13 @@
 
             const senderId = req.user._id;
             const sender = req.user.organisationName;
-            const donorId = food.donor;
+            const donorId = food.donor._id;
             const foodName = food.foodName;
             const message = `${sender} accepted your donation of ${foodName}`;
             const status = "unread"; 
             const timestamp = new Date(); 
+
+            await NGO.findOneAndUpdate({ user: req.user._id},{$push:{selectedFood: food}},{upsert : true});
             
             const notification = await NotificationService.sendNotification(senderId, donorId, message, status, timestamp);
             console.log(notification);
@@ -189,7 +194,7 @@ router.post("/ngo/feedback/:collectionId", middleware.ensureNgoLoggedIn, async (
     try {
         const collectionId = req.params.collectionId;
         const feedback = req.body.feedback;
-        const food = await Food.findByIdAndUpdate(collectionId, { adminToAgentMsg: feedback });
+        const food = await Food.findByIdAndUpdate(collectionId, { ngoToDonorMsg: feedback });
         req.flash("success", "Feedback sent successfully");
         res.redirect("/ngo/donations/previous");
     } catch (err) {

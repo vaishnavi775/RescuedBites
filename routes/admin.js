@@ -185,7 +185,10 @@ router.put("/admin/profile", middleware.ensureAdminLoggedIn, async (req,res) => 
 	{
 		const id = req.user._id;
 		const updateObj = req.body.admin;	
+		const number = req.body.donor;
 		await User.findByIdAndUpdate(id, updateObj);
+		await User.findByIdAndUpdate(id, number);
+		console.log(req.body);
 		
 		req.flash("success", "Profile updated successfully");
 		res.redirect("/admin/profile");
