@@ -7,7 +7,7 @@
 			<span class="me-3" id="sidebar-toggler-btn"><i class="fas fa-bars"></i></span>
 			<h5 class="m-0 color-theme d-inline-block">Previously collected Donation</h5>
 		</div>
-		<div>
+		<div  class="prof mb-4 p-4 shadow-sm" style="margin-left:2rem ;margin-right:2rem">
 		<% for(let i=0; i<donation.length; i++) { %>
 			<div class="mb-2">
 				<span>Food Name:</span>
@@ -46,6 +46,6 @@
 		<% } %>	
 		
 		</div>
-		<div><a href="/admin/donor/<%= ngoId %>" class="btn">Back</a></div>	
+		<div style="margin-left:3%"><a href="/admin/donor/<%= ngoId %>" class="btn">Back</a></div>	
 	</div>
 </main>
