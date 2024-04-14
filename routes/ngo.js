@@ -8,7 +8,7 @@
     const Donor = require("../models/donor.js");
     const NotificationService = require('../config/notificationService');
     const Notification = require('../models/notification.js'); // Corrected file path
-
+    const nodemailer = require('nodemailer');
 
 
     router.get('/ngo/notification', async (req, res) => {
@@ -146,16 +146,50 @@
             food.status = "collected";
             food.collectionTime = Date.now();
             food.ngo = req.user._id; 
-            
+
             await food.save();
             console.log(food)
-            req.flash("success", "Donation collected successfully");
-
+            req.flash("success", "Donation request accepted");
+            const donorid = food.donor._id;
+            const donor = await User.findById(donorid);
+            console.log(donor.email);
+            if (donor && donor.email) {
+                const transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com', 
+                    port: 465, 
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.EMAIL_USER, 
+                        pass: process.env.EMAIL_PASSWORD 
+                    }
+                });
+    
+                const mailOptions = {
+                    from: process.env.EMAIL_USER,
+                    to: donor.email,
+                    subject: 'Donation Request Accepted',
+                    html: `<h2>Donation Request Accepted</h2> 
+                    <p>Hello ${donor.firstName},</p>
+                    <p>Your donation request of ${food.foodName} has been accepted by ${req.user.organisationName}. You will be contacted by them soon.</p>`
+                };
+    
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        // req.flash("error", "Failed to send email to the donor.");
+                    } else {
+                        console.log('Email sent:', info.response);
+                        // req.flash("success", "Collection confirmed. Email sent to the donor.");
+                    }
+                });
+            } else {
+                req.flash("error", "Donor email not found.");
+            }
             const senderId = req.user._id;
             const sender = req.user.organisationName;
             const donorId = food.donor._id;
             const foodName = food.foodName;
-            const message = `${sender} accepted your donation of ${foodName}`;
+            const message = `${sender} accepted your donation request of ${foodName}`;
             const status = "unread"; 
             const timestamp = new Date(); 
 

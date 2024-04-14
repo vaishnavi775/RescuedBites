@@ -13,7 +13,7 @@ const foodSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    cookingDate: {
+    expiryDate: {
         type: Date,
         required: true,
     },
