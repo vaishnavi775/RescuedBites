@@ -105,10 +105,10 @@ router.post('/auth/forgot-password', async (req, res) => {
         if (!user) {
             return res.render('auth/forgot-password', { error: 'Email not found' });
         }
-        
-        const token = crypto.randomBytes(20).toString('hex');
-        const tokenExpiry = Date.now() + 3600000; 
-        
+            
+            const token = crypto.randomBytes(20).toString('hex');
+            const tokenExpiry = Date.now() + 3600000; 
+            
         user.resetPasswordToken = token;
         user.resetPasswordExpires = tokenExpiry;
         await user.save();
