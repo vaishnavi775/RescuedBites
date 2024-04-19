@@ -7,6 +7,7 @@
 			<span class="me-3" id="sidebar-toggler-btn"><i class="fas fa-bars"></i></span>
 			<h5 class="m-0 color-theme d-inline-block">person details</h5>
 		</div>
+		<div class="prof mb-4 p-4 shadow-sm" style="margin-left:2rem ;margin-right:2rem">
             <div class="mb-2">
                 <span>person name:</span>
                 <span><%= person.firstName + " " + person.lastName %></span>
@@ -41,5 +42,6 @@
 			<div class="mb-2"><a href="/admin/donor/view/collected/<%= person._id %>" class="btn">View Collected Donations</a></div>
 
             <div class="mb-2"><a href="/admin/donor/view/pending/<%= person._id %>" class="btn">View Pending Donations</a></div>
+		</div>
 	</div>
 </main>
